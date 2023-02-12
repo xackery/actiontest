@@ -21,9 +21,4 @@ jobs:
         GOARCH: amd64
       working-directory: .
       run: |
-        make set-version
-        echo "Version set to $VERSION"
-        make build-linux
-        echo "Version now set to $VERSION"
-    - name: Echo VERSION
-      run: echo "$VERSION is another step"
+        md5sum -c rof/eqhost.txt
