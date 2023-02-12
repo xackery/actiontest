@@ -1,0 +1,31 @@
+name: Platform Tests & Build
+on: [push]
+env:
+  VERSION: 0.0.1
+
+jobs:
+  platform_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.19]
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+        
+    - name: Build binaries
+      env:
+        GOOS: linux
+        GOARCH: amd64
+      working-directory: .
+      run: |
+        make set-variable
+        echo "Version set to $VERSION"
+        make build-linux
+      if: ${{runner.os == 'Linux'}}
+    - name: Echo VERSION
+      run: echo "$VERSION is another step"
