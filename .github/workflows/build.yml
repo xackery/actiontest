@@ -23,7 +23,7 @@ jobs:
         GOARCH: amd64
       working-directory: .
       run: |
-        make set-variable
+        make set-version
         echo "Version set to $VERSION"
         make build-linux
       if: ${{runner.os == 'Linux'}}
