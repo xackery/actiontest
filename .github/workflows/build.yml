@@ -26,6 +26,7 @@ jobs:
         make set-version
         echo "Version set to $VERSION"
         make build-linux
-      if: ${{runner.os == 'Linux'}}
+        echo "VERSION=0.0.2" >> $VERSION
+        echo "Version now set to $VERSION"
     - name: Echo VERSION
       run: echo "$VERSION is another step"
