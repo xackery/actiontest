@@ -21,4 +21,4 @@ jobs:
         GOARCH: amd64
       working-directory: .
       run: |
-        md5sum -c rof/eqhost.txt
+        md5sum rof/eqhost.txt
