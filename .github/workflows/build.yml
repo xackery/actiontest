@@ -26,7 +26,6 @@ jobs:
         make set-version
         echo "Version set to $VERSION"
         make build-linux
-        echo "VERSION=0.0.3" >> $GITHUB_ENV
         echo "Version now set to $VERSION"
     - name: Echo VERSION
       run: echo "$VERSION is another step"
