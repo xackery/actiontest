@@ -28,6 +28,8 @@ jobs:
         cd "rof"
         C:\msys64\usr\bin\wget.exe --no-verbose https://github.com/xackery/filelistbuilder/releases/latest/download/filelistbuilder-win-x64.exe
         .\filelistbuilder-win-x64.exe "rof" "${{env.STORAGE_URL}}"
+        type eqhost.txt
+        C:\msys64\usr\bin\md5sum.exe eqhost.txt
 
     - name: Release
       uses: "marvinpinto/action-automatic-releases@latest"
