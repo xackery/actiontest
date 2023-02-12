@@ -1,24 +1,45 @@
-name: Platform Tests & Build
-on: [push]
+name: Build and Release
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  VERSION: 1.0.6
+  BUILD_CONFIGURATION: Release
+  SERVER_NAME: ${{ vars.SERVER_NAME == '' && 'EQEmu Patcher' || vars.SERVER_NAME }}
+  FILE_NAME: ${{ vars.FILE_NAME == '' && 'eqemupatcher' || vars.FILE_NAME }}
+  FILELIST_URL: ${{ vars.FILELIST_URL == '' && format('https://github.com/{0}/releases/latest/download/', github.repository) || vars.FILELIST_URL }}
+  PATCHER_URL: ${{ vars.PATCHER_URL == '' && format('https://github.com/{0}/releases/latest/download/', github.repository) || vars.PATCHER }}
+  STORAGE_URL: ${{ vars.STORAGE_URL == '' && format('https://raw.githubusercontent.com/{0}/master/rof/', github.repository) || vars.STORAGE_URL }}
 
 jobs:
-  platform_tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        go-version: [1.19]
-        os: [ubuntu-latest]
+  build:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-        
-    - name: Build binaries
-      env:
-        GOOS: linux
-        GOARCH: amd64
-      working-directory: .
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Generate filelist
       run: |
-        md5sum rof/eqhost.txt
+        cd "rof"
+        C:\msys64\usr\bin\wget.exe --no-verbose https://github.com/xackery/filelistbuilder/releases/latest/download/filelistbuilder-win-x64.exe
+        .\filelistbuilder-win-x64.exe "rof" "${{env.STORAGE_URL}}" "../EQEmu Patcher/EQEmu Patcher/bin/Release/eqemupatcher.exe"
+        move "../EQEmu Patcher/EQEmu Patcher/bin/Release/eqemupatcher.exe" "../EQEmu Patcher/EQEmu Patcher/bin/Release/${{env.FILE_NAME}}.exe"
+        move eqemupatcher-hash.txt ${{env.FILE_NAME}}-hash.txt
+
+    - name: Release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      if: github.ref == 'refs/heads/master'
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "${{ env.VERSION }}.${{ github.run_number }}"
+        prerelease: false
+        title: "${{ env.VERSION }}.${{ github.run_number }}"
+        files: |
+          EQEmu Patcher/EQEmu Patcher/bin/Release/${{env.FILE_NAME}}.exe
+          rof/filelist_rof.yml
+          rof/${{env.FILE_NAME}}-hash.txt
