@@ -28,7 +28,6 @@ jobs:
         cd "rof"
         C:\msys64\usr\bin\wget.exe --no-verbose https://github.com/xackery/filelistbuilder/releases/latest/download/filelistbuilder-win-x64.exe
         .\filelistbuilder-win-x64.exe "rof" "${{env.STORAGE_URL}}"
-        move eqemupatcher-hash.txt ${{env.FILE_NAME}}-hash.txt
 
     - name: Release
       uses: "marvinpinto/action-automatic-releases@latest"
@@ -39,6 +38,4 @@ jobs:
         prerelease: false
         title: "${{ env.VERSION }}.${{ github.run_number }}"
         files: |
-          EQEmu Patcher/EQEmu Patcher/bin/Release/${{env.FILE_NAME}}.exe
           rof/filelist_rof.yml
-          rof/${{env.FILE_NAME}}-hash.txt
