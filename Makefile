@@ -1,6 +1,6 @@
 VERSION := 0.0.2
 
 set-version:
-	echo "CANT SET VERSION?"
+	echo "VERSION=${VERSION}" >> $GITHUB_ENV
 build-linux:
 	echo "building linux ${VERSION}"
